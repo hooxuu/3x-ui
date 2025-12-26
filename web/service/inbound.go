@@ -240,19 +240,22 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 		var settings map[string]any
 		if err2 := json.Unmarshal([]byte(inbound.Settings), &settings); err2 == nil && settings != nil {
 			now := time.Now().Unix() * 1000
-			updatedClients := make([]model.Client, 0, len(clients))
-			for _, c := range clients {
-				if c.CreatedAt == 0 {
-					c.CreatedAt = now
+			if interfaceClients, ok := settings["clients"].([]any); ok {
+				for i := range interfaceClients {
+					if cm, ok := interfaceClients[i].(map[string]any); ok {
+						if _, ok2 := cm["created_at"]; !ok2 {
+							cm["created_at"] = now
+						}
+						cm["updated_at"] = now
+						interfaceClients[i] = cm
+					}
 				}
-				c.UpdatedAt = now
-				updatedClients = append(updatedClients, c)
-			}
-			settings["clients"] = updatedClients
-			if bs, err3 := json.MarshalIndent(settings, "", "  "); err3 == nil {
-				inbound.Settings = string(bs)
-			} else {
-				logger.Debug("Unable to marshal inbound settings with timestamps:", err3)
+				settings["clients"] = interfaceClients
+				if bs, err3 := json.MarshalIndent(settings, "", "  "); err3 == nil {
+					inbound.Settings = string(bs)
+				} else {
+					logger.Debug("Unable to marshal inbound settings with timestamps:", err3)
+				}
 			}
 		} else if err2 != nil {
 			logger.Debug("Unable to parse inbound settings for timestamps:", err2)
