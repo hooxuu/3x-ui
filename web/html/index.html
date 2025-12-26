@@ -9,7 +9,7 @@
     <a-layout-content>
       <a-spin :spinning="loadingStates.spinning" :delay="200" :tip="loadingTip">
         <transition name="list" appear>
-          <a-alert type="error" v-if="showAlert && loadingStates.fetched" class="mb-10"
+          <a-alert type="error" v-if="userRole === 'admin' && showAlert && loadingStates.fetched" class="mb-10"
             message='{{ i18n "secAlertTitle" }}' color="red" description='{{ i18n "secAlertSsl" }}' show-icon closable>
           </a-alert>
         </transition>
