@@ -5,6 +5,7 @@
 <a-layout id="app" v-cloak :class="themeSwitcher.currentTheme + ' inbounds-page'">
   <a-sidebar></a-sidebar>
   <a-layout id="content-layout">
+    <a-header></a-header>
     <a-layout-content>
       <a-spin :spinning="loadingStates.spinning" :delay="500" tip='{{ i18n "loading"}}'>
         <transition name="list" appear>
@@ -115,6 +116,7 @@
                           <a-icon type="import"></a-icon>
                           {{ i18n "pages.inbounds.importInbound" }}
                         </a-menu-item>
+                        <template v-if="userRole === 'admin' || userRole === ''">
                         <a-menu-item key="export">
                           <a-icon type="export"></a-icon>
                           {{ i18n "pages.inbounds.export" }}
@@ -131,10 +133,11 @@
                           <a-icon type="file-done"></a-icon>
                           {{ i18n "pages.inbounds.resetAllClientTraffics" }}
                         </a-menu-item>
-                        <a-menu-item key="delDepletedClients" :style="{ color: '#FF4D4F' }">
-                          <a-icon type="rest"></a-icon>
-                          {{ i18n "pages.inbounds.delDepletedClients" }}
-                        </a-menu-item>
+<!--                        <a-menu-item key="delDepletedClients" :style="{ color: '#FF4D4F' }">-->
+<!--                          <a-icon type="rest"></a-icon>-->
+<!--                          {{ i18n "pages.inbounds.delDepletedClients" }}-->
+<!--                        </a-menu-item>-->
+                        </template>
                       </a-menu>
                     </a-dropdown>
                   </a-space>
@@ -224,10 +227,10 @@
                               <a-icon type="export"></a-icon>
                               {{ i18n "pages.inbounds.export"}} - {{ i18n "pages.settings.subSettings" }}
                             </a-menu-item>
-                            <a-menu-item key="delDepletedClients" :style="{ color: '#FF4D4F' }">
-                              <a-icon type="rest"></a-icon>
-                              {{ i18n "pages.inbounds.delDepletedClients" }}
-                            </a-menu-item>
+<!--                            <a-menu-item key="delDepletedClients" :style="{ color: '#FF4D4F' }">-->
+<!--                              <a-icon type="rest"></a-icon>-->
+<!--                              {{ i18n "pages.inbounds.delDepletedClients" }}-->
+<!--                            </a-menu-item>-->
                           </template>
                           <template v-else>
                             <a-menu-item key="showInfo">
@@ -598,6 +601,7 @@
 <script src="{{ .base_path }}assets/js/model/inbound.js?{{ .cur_ver }}"></script>
 <script src="{{ .base_path }}assets/js/model/dbinbound.js?{{ .cur_ver }}"></script>
 {{template "component/aSidebar" .}}
+{{template "component/aHeader" .}}
 {{template "component/aThemeSwitch" .}}
 {{template "component/aCustomStatistic" .}}
 {{template "component/aPersianDatepicker" .}}
@@ -740,6 +744,7 @@
       tgBotEnable: false,
       showAlert: false,
       ipLimitEnable: false,
+      userRole: '{{ .user.Role }}',
       pageSize: 0,
     },
     methods: {
@@ -1411,7 +1416,7 @@
           case statsColor == "orange" || expColor == "orange":
             return "#f37b24"; // Orange
           case statsColor == "green" || expColor == "green":
-            return "#008771"; // Green
+            return "#1990FF"; // Green
           default:
             return "#7a316f"; // purple
         }

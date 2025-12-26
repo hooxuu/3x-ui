@@ -9,6 +9,7 @@
 <a-layout id="app" v-cloak :class="themeSwitcher.currentTheme + ' xray-page'">
   <a-sidebar></a-sidebar>
   <a-layout id="content-layout">
+    <a-header></a-header>
     <a-layout-content>
       <a-spin :spinning="loadingStates.spinning" :delay="500" tip='{{ i18n "loading"}}'>
         <transition name="list" appear>

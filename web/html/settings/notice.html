@@ -1,0 +1,13 @@
+{{define "settings/notice"}}
+<a-collapse default-active-key="1">
+    <a-collapse-panel key="1" header='{{ i18n "pages.settings.noticeTitle"}}'>
+        <a-setting-list-item paddings="small">
+            <template #title>{{ i18n "pages.settings.noticeContent"}}</template>
+            <template #description>{{ i18n "pages.settings.noticeContentDesc"}}</template>
+            <template #control>
+                <a-textarea v-model="allSetting.noticeContent" :auto-size="{ minRows: 3, maxRows: 10 }"></a-textarea>
+            </template>
+        </a-setting-list-item>
+    </a-collapse-panel>
+</a-collapse>
+{{end}}

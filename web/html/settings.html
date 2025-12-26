@@ -5,6 +5,7 @@
 <a-layout id="app" v-cloak :class="themeSwitcher.currentTheme + ' settings-page'">
   <a-sidebar></a-sidebar>
   <a-layout id="content-layout">
+    <a-header></a-header>
     <a-layout-content>
       <a-spin :spinning="loadingStates.spinning" :delay="500" tip='{{ i18n "loading"}}'>
         <transition name="list" appear>
@@ -89,8 +90,14 @@
                     </template>
                     {{ template "settings/panel/subscription/json" . }}
                   </a-tab-pane>
+                  <a-tab-pane key="6" :style="{ paddingTop: '20px' }">
+                    <template #tab>
+                      <a-icon type="notification"></a-icon>
+                      <span>{{ i18n "pages.settings.notice" }}</span>
+                    </template>
+                    {{ template "settings/notice" . }}
+                  </a-tab-pane>
                 </a-tabs>
-              </a-col>
             </a-row>
           </template>
         </transition>
@@ -103,6 +110,7 @@
 <script src="{{ .base_path }}assets/otpauth/otpauth.umd.min.js?{{ .cur_ver }}"></script>
 <script src="{{ .base_path }}assets/js/model/setting.js?{{ .cur_ver }}"></script>
 {{template "component/aSidebar" .}}
+{{template "component/aHeader" .}}
 {{template "component/aThemeSwitch" .}}
 {{template "component/aSettingListItem" .}}
 {{template "modals/twoFactorModal"}}

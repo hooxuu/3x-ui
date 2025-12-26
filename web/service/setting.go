@@ -94,6 +94,7 @@ var defaultValueMap = map[string]string{
 	"ldapDefaultTotalGB":    "0",
 	"ldapDefaultExpiryDays": "0",
 	"ldapDefaultLimitIP":    "0",
+	"noticeContent":         "",
 }
 
 // SettingService provides business logic for application settings management.

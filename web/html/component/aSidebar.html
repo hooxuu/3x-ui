@@ -43,38 +43,58 @@
     Vue.component('a-sidebar', {
         data() {
             return {
-                tabs: [
+                allTabs: [
                     {
                         key: '{{ .base_path }}panel/',
                         icon: 'dashboard',
-                        title: '{{ i18n "menu.dashboard"}}'
+                        title: '{{ i18n "menu.dashboard"}}',
+                        role: 'all'
                     },
                     {
                         key: '{{ .base_path }}panel/inbounds',
-                        icon: 'user',
-                        title: '{{ i18n "menu.inbounds"}}'
+                        icon: 'setting',
+                        title: '{{ i18n "menu.inbounds"}}',
+                        role: 'all'
                     },
                     {
                         key: '{{ .base_path }}panel/settings',
                         icon: 'setting',
-                        title: '{{ i18n "menu.settings"}}'
+                        title: '{{ i18n "menu.settings"}}',
+                        role: 'admin'
                     },
                     {
                         key: '{{ .base_path }}panel/xray',
                         icon: 'tool',
-                        title: '{{ i18n "menu.xray"}}'
+                        title: '{{ i18n "menu.xray"}}',
+                        role: 'admin'
                     },
                     {
-                        key: '{{ .base_path }}logout/',
-                        icon: 'logout',
-                        title: '{{ i18n "menu.logout"}}'
+                        key: '{{ .base_path }}panel/users',
+                        icon: 'user',
+                        title: '{{ i18n "menu.user"}}',
+                        role: 'admin'
                     },
+                    // {
+                    //     key: '{{ .base_path }}logout/',
+                    //     icon: 'logout',
+                    //     title: '{{ i18n "menu.logout"}}',
+                    //     role: 'all'
+                    // },
                 ],
                 activeTab: [
                     '{{ .request_uri }}'
                 ],
                 visible: false,
                 collapsed: JSON.parse(localStorage.getItem(SIDEBAR_COLLAPSED_KEY)),
+                userRole: '{{ .user.Role }}'
+            }
+        },
+        computed: {
+            tabs() {
+                if (this.userRole === 'admin' || this.userRole === '') {
+                    return this.allTabs;
+                }
+                return this.allTabs.filter(tab => tab.role === 'all');
             }
         },
         methods: {

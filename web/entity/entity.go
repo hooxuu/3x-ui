@@ -48,6 +48,9 @@ type AllSetting struct {
 	TgCpu            int    `json:"tgCpu" form:"tgCpu"`                       // CPU usage threshold for alerts
 	TgLang           string `json:"tgLang" form:"tgLang"`                     // Telegram bot language
 
+	// Notice settings
+	NoticeContent string `json:"noticeContent" form:"noticeContent"` // Custom notification content
+
 	// Security settings
 	TimeLocation    string `json:"timeLocation" form:"timeLocation"`       // Time zone location
 	TwoFactorEnable bool   `json:"twoFactorEnable" form:"twoFactorEnable"` // Enable two-factor authentication

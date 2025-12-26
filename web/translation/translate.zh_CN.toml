@@ -95,11 +95,20 @@
 "settings" = "面板设置"
 "xray" = "Xray 设置"
 "logout" = "退出登录"
+"user" = "用户维护"
 "link" = "管理"
+
+[pages.users]
+"userId" = "ID"
+"role" = "角色"
+"addUser" = "添加用户"
+"editUser" = "编辑用户"
+"deleteUser" = "删除用户"
+"deleteUserContent" = "您确定要删除用户"
 
 [pages.login]
 "hello" = "你好"
-"title" = "欢迎"
+"title" = "Hello"
 "loginAgain" = "登录时效已过，请重新登录"
 
 [pages.login.toasts]
@@ -416,6 +425,10 @@
 "intervals" = "间隔"
 "information" = "信息"
 "language" = "语言"
+"notice" = "公告"
+"noticeTitle" = "公告设置"
+"noticeContent" = "公告内容"
+"noticeContentDesc" = "显示在标题栏中的内容（支持HTML）"
 "telegramBotLanguage" = "Telegram 机器人语言"
 
 [pages.xray]

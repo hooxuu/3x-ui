@@ -1,0 +1,130 @@
+{{ template "page/head_start" .}}
+{{ template "page/head_end" .}}
+
+{{ template "page/body_start" .}}
+<a-layout id="app" v-cloak :class="themeSwitcher.currentTheme + ' users-page'">
+  <a-sidebar></a-sidebar>
+  <a-layout id="content-layout">
+    <a-header></a-header>
+    <a-layout-content>
+      <a-spin :spinning="loadingStates.spinning" :delay="500" tip='{{ i18n "loading"}}'>
+        <transition name="list" appear>
+            <a-card hoverable style="margin: 20px;">
+                <template #title>
+                    <a-button type="primary" icon="plus" @click="openAddUser">
+                        {{ i18n "pages.users.addUser" }}
+                    </a-button>
+                </template>
+                <a-table :columns="columns" :row-key="user => user.id" :data-source="users" :pagination="pagination">
+                    <template slot="action" slot-scope="text, user">
+                        <a-space>
+                            <a-button type="primary" size="small" icon="edit" @click="openEditUser(user)">{{ i18n "edit" }}</a-button>
+                            <a-button type="danger" size="small" icon="delete" @click="delUser(user)">{{ i18n "delete" }}</a-button>
+                        </a-space>
+                    </template>
+                </a-table>
+            </a-card>
+        </transition>
+      </a-spin>
+    </a-layout-content>
+  </a-layout>
+</a-layout>
+{{template "page/body_scripts" .}}
+{{template "component/aSidebar" .}}
+{{template "component/aHeader" .}}
+{{template "component/aThemeSwitch" .}}
+{{template "modals/userModal"}}
+<script>
+    const columns = [
+        { title: '{{ i18n "pages.users.userId" }}', dataIndex: "id", key: "id" },
+        { title: '{{ i18n "username" }}', dataIndex: "username", key: "username" },
+        { title: '{{ i18n "pages.users.role" }}', dataIndex: "role", key: "role" },
+        { title: '{{ i18n "remark" }}', dataIndex: "remark", key: "remark" },
+        { title: '{{ i18n "pages.settings.actions" }}', key: "action", scopedSlots: { customRender: "action" } }
+    ];
+
+    const app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        data: {
+            themeSwitcher,
+            loadingStates: { spinning: false },
+            users: [],
+            columns
+        },
+        methods: {
+            loading(spinning = true) {
+                this.loadingStates.spinning = spinning;
+            },
+            async getUsers() {
+                this.loading();
+                // Mock API call or use actual endpoint if/when implemented
+                // For now, let's assume the endpoint will be /panel/api/users/list
+                try {
+                    const msg = await HttpUtil.get('/panel/api/users/list');
+                    if (msg.success) {
+                        this.users = msg.obj;
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+                this.loading(false);
+            },
+            openAddUser() {
+                userModal.show({
+                    title: '{{ i18n "pages.users.addUser" }}',
+                    okText: '{{ i18n "add" }}',
+                    confirm: async (user) => {
+                        await this.submit('/panel/api/users/add', user);
+                    }
+                });
+            },
+            openEditUser(user) {
+                userModal.show({
+                    title: '{{ i18n "pages.users.editUser" }}',
+                    okText: '{{ i18n "update" }}',
+                    user: user,
+                    isEdit: true,
+                    confirm: async (user) => {
+                        await this.submit(`/panel/api/users/update/${user.id}`, user);
+                    }
+                });
+            },
+            delUser(user) {
+                this.$confirm({
+                    title: '{{ i18n "pages.users.deleteUser" }}',
+                    content: '{{ i18n "pages.users.deleteUserContent" }} ' + user.username + '?',
+                    class: themeSwitcher.currentTheme,
+                    okText: '{{ i18n "delete" }}',
+                    cancelText: '{{ i18n "cancel" }}',
+                    onOk: async () => {
+                         const msg = await HttpUtil.post(`/panel/api/users/del/${user.id}`);
+                         if (msg.success) {
+                             await this.getUsers();
+                         }
+                    }
+                });
+            },
+            async submit(url, data) {
+                userModal.loading(true);
+                const msg = await HttpUtil.post(url, data);
+                if (msg.success) {
+                    userModal.close();
+                    await this.getUsers();
+                }
+                userModal.loading(false);
+            },
+            pagination() {
+                return {
+                    pageSize: 10,
+                    showSizeChanger: true,
+                    showTotal: total => `Total ${total} items`
+                };
+            }
+        },
+        mounted() {
+            this.getUsers();
+        }
+    });
+</script>
+{{ template "page/body_end" .}}

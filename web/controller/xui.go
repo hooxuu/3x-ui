@@ -10,6 +10,7 @@ type XUIController struct {
 
 	settingController     *SettingController
 	xraySettingController *XraySettingController
+	userController        *UserController
 }
 
 // NewXUIController creates a new XUIController and initializes its routes.
@@ -28,9 +29,16 @@ func (a *XUIController) initRouter(g *gin.RouterGroup) {
 	g.GET("/inbounds", a.inbounds)
 	g.GET("/settings", a.settings)
 	g.GET("/xray", a.xraySettings)
+	g.GET("/users", a.users)
 
 	a.settingController = NewSettingController(g)
 	a.xraySettingController = NewXraySettingController(g)
+	a.userController = NewUserController(g.Group("/api/users"))
+}
+
+// users renders the users management page.
+func (a *XUIController) users(c *gin.Context) {
+	html(c, "users.html", "Users Management", nil)
 }
 
 // index renders the main panel index page.

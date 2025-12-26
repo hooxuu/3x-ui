@@ -5,6 +5,7 @@
 <a-layout id="app" v-cloak :class="themeSwitcher.currentTheme + ' index-page'">
   <a-sidebar></a-sidebar>
   <a-layout id="content-layout">
+    <a-header></a-header>
     <a-layout-content>
       <a-spin :spinning="loadingStates.spinning" :delay="200" :tip="loadingTip">
         <transition name="list" appear>
@@ -78,7 +79,7 @@
                   </a-row>
                 </a-card>
               </a-col>
-              <a-col :sm="24" :lg="12">
+              <a-col :sm="24" :lg="12"  v-if="userRole === 'admin'">
                 <a-card hoverable>
                   <template #title>
                     <a-space direction="horizontal">
@@ -137,7 +138,7 @@
                   </template>
                 </a-card>
               </a-col>
-              <a-col :sm="24" :lg="12">
+              <a-col :sm="24" :lg="12"  v-if="userRole === 'admin'">
                 <a-card title='{{ i18n "menu.link" }}' hoverable>
                   <template #actions>
                     <a-space direction="horizontal" @click="openLogs()" class="jc-center">
@@ -155,7 +156,7 @@
                   </template>
                 </a-card>
               </a-col>
-              <a-col :sm="24" :lg="12">
+              <a-col :sm="24" :lg="12"  v-if="userRole === 'admin'">
                 <a-card title='3X-UI' hoverable>
                   <a rel="noopener" href="https://github.com/MHSanaei/3x-ui/releases" target="_blank">
                     <a-tag color="green">
@@ -449,6 +450,7 @@
 </a-layout>
 {{template "page/body_scripts" .}}
 {{template "component/aSidebar" .}}
+{{template "component/aHeader" .}}
 {{template "component/aThemeSwitch" .}}
 {{template "component/aCustomStatistic" .}}
 {{template "modals/textModal"}}
@@ -460,7 +462,7 @@
       // viewBox width for drawing space; SVG width will be 100% of container
       vbWidth: { type: Number, default: 320 },
       height: { type: Number, default: 80 },
-      stroke: { type: String, default: '#008771' },
+      stroke: { type: String, default: '#1990FF' },
       strokeWidth: { type: Number, default: 2 },
       maxPoints: { type: Number, default: 120 },
       showGrid: { type: Boolean, default: true },
@@ -656,7 +658,7 @@
     get color() {
       const percent = this.percent;
       if (percent < 80) {
-        return '#008771'; // Green
+        return '#1990FF'; // Green
       } else if (percent < 90) {
         return "#f37b24"; // Orange
       } else {
@@ -755,7 +757,7 @@
     formatLogs(logs) {
       let formattedLogs = '';
       const levels = ["DEBUG", "INFO", "NOTICE", "WARNING", "ERROR"];
-      const levelColors = ["#3c89e8", "#008771", "#008771", "#f37b24", "#e04141", "#bcbcbc"];
+      const levelColors = ["#3c89e8", "#1990FF", "#1990FF", "#f37b24", "#e04141", "#bcbcbc"];
 
       logs.forEach((log, index) => {
         let [data, message] = log.split(" - ", 2);
@@ -895,6 +897,7 @@
       showAlert: false,
       showIp: false,
       ipLimitEnable: false,
+      userRole: '{{ .user.Role }}',
     },
     methods: {
       loading(spinning, tip = '{{ i18n "loading"}}') {

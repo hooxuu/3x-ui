@@ -44,7 +44,7 @@ func (a *InboundController) initRouter(g *gin.RouterGroup) {
 	g.POST("/:id/resetClientTraffic/:email", a.resetClientTraffic)
 	g.POST("/resetAllTraffics", a.resetAllTraffics)
 	g.POST("/resetAllClientTraffics/:id", a.resetAllClientTraffics)
-	g.POST("/delDepletedClients/:id", a.delDepletedClients)
+	//g.POST("/delDepletedClients/:id", a.delDepletedClients)
 	g.POST("/import", a.importInbound)
 	g.POST("/onlines", a.onlines)
 	g.POST("/lastOnline", a.lastOnline)
@@ -55,7 +55,15 @@ func (a *InboundController) initRouter(g *gin.RouterGroup) {
 // getInbounds retrieves the list of inbounds for the logged-in user.
 func (a *InboundController) getInbounds(c *gin.Context) {
 	user := session.GetLoginUser(c)
-	inbounds, err := a.inboundService.GetInbounds(user.Id)
+	var inbounds []*model.Inbound
+	var err error
+
+	if user.Role == model.UserRoleAdmin {
+		inbounds, err = a.inboundService.GetAllInbounds()
+	} else {
+		inbounds, err = a.inboundService.GetInbounds(user.Id)
+	}
+
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return

@@ -128,6 +128,48 @@ func (s *UserService) UpdateUser(id int, username string, password string) error
 		Error
 }
 
+func (s *UserService) GetAllUsers() ([]*model.User, error) {
+	db := database.GetDB()
+	var users []*model.User
+	err := db.Model(model.User{}).Find(&users).Error
+	return users, err
+}
+
+func (s *UserService) AddUser(user *model.User) error {
+	db := database.GetDB()
+	hashedPassword, err := crypto.HashPasswordAsBcrypt(user.Password)
+	if err != nil {
+		return err
+	}
+	user.Password = hashedPassword
+	return db.Create(user).Error
+}
+
+func (s *UserService) UpdateUserById(id int, updates map[string]interface{}) error {
+	db := database.GetDB()
+
+	if pwd, ok := updates["password"]; ok {
+		passwordStr, ok := pwd.(string)
+		if ok && passwordStr != "" {
+			hashedPassword, err := crypto.HashPasswordAsBcrypt(passwordStr)
+			if err != nil {
+				return err
+			}
+			updates["password"] = hashedPassword
+		} else {
+			delete(updates, "password")
+		}
+	}
+	delete(updates, "id")
+
+	return db.Model(model.User{}).Where("id = ?", id).Updates(updates).Error
+}
+
+func (s *UserService) DeleteUserById(id int) error {
+	db := database.GetDB()
+	return db.Delete(&model.User{}, id).Error
+}
+
 func (s *UserService) UpdateFirstUser(username string, password string) error {
 	if username == "" {
 		return errors.New("username can not be empty")

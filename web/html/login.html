@@ -13,10 +13,10 @@
             <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
           </defs>
           <g class="parallax">
-            <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(0, 135, 113, 0.08)" />
-            <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(0, 135, 113, 0.08)" />
-            <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(0, 135, 113, 0.08)" />
-            <use xlink:href="#gentle-wave" x="48" y="7" fill="#c7ebe2" />
+            <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(25, 144, 255, 0.08)" />
+            <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(25, 144, 255, 0.08)" />
+            <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(25, 144, 255, 0.08)" />
+            <use xlink:href="#gentle-wave" x="48" y="7" fill="#bae7ff" />
           </g>
         </svg>
       </div>
@@ -34,14 +34,6 @@
                 <template slot="content">
                   <a-space direction="vertical" :size="10">
                     <a-theme-switch-login></a-theme-switch-login>
-                    <span>{{ i18n "pages.settings.language" }}</span>
-                    <a-select ref="selectLang" class="w-100" v-model="lang" @change="LanguageManager.setLanguage(lang)"
-                      :dropdown-class-name="themeSwitcher.currentTheme">
-                      <a-select-option :value="l.value" label="English" v-for="l in LanguageManager.supportedLanguages">
-                        <span role="img" aria-label="l.name" v-text="l.icon"></span>
-                        &nbsp;&nbsp;<span v-text="l.name"></span>
-                      </a-select-option>
-                    </a-select>
                   </a-space>
                 </template>
                 <a-button shape="circle" icon="setting"></a-button>

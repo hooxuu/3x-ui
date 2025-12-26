@@ -1,0 +1,71 @@
+{{define "modals/userModal"}}
+<a-modal id="user-modal" v-model="userModal.visible" :title="userModal.title" @ok="userModal.ok"
+         :confirm-loading="userModal.confirmLoading" :closable="true" :mask-closable="false"
+         :class="themeSwitcher.currentTheme"
+         :ok-text="userModal.okText" cancel-text='{{ i18n "close" }}'>
+    <a-form :layout="'vertical'">
+        <a-form-item label='{{ i18n "username" }}'>
+            <a-input v-model="userModal.user.username"></a-input>
+        </a-form-item>
+        <a-form-item label='{{ i18n "password" }}'>
+            <a-input v-model="userModal.user.password" type="password"></a-input>
+        </a-form-item>
+        <a-form-item label='{{ i18n "pages.users.role" }}'>
+             <a-select v-model="userModal.user.role">
+                <a-select-option value="admin">Admin</a-select-option>
+                <a-select-option value="tenant">Tenant</a-select-option>
+            </a-select>
+        </a-form-item>
+        <a-form-item label='{{ i18n "remark" }}'>
+            <a-input v-model="userModal.user.remark"></a-input>
+        </a-form-item>
+    </a-form>
+</a-modal>
+<script>
+    const userModal = {
+        visible: false,
+        confirmLoading: false,
+        title: '',
+        okText: '',
+        isEdit: false,
+        user: {
+            username: '',
+            password: '',
+            role: 'tenant',
+            remark: ''
+        },
+        ok() {
+            ObjectUtil.execute(userModal.confirm, userModal.user);
+        },
+        show({ title = '', okText = '{{ i18n "sure" }}', user = null, confirm = () => { }, isEdit = false }) {
+            this.visible = true;
+            this.title = title;
+            this.okText = okText;
+            this.isEdit = isEdit;
+            if (user) {
+                this.user = JSON.parse(JSON.stringify(user));
+                this.user.password = ''; // Clear password on edit
+            } else {
+                this.user = { username: '', password: '', role: 'tenant', remark: '' };
+            }
+            this.confirm = confirm;
+        },
+        close() {
+            userModal.visible = false;
+            userModal.loading(false);
+        },
+        loading(loading=true) {
+            userModal.confirmLoading = loading;
+        }
+    };
+
+    new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#user-modal',
+        data: {
+            userModal,
+            themeSwitcher
+        }
+    });
+</script>
+{{end}}

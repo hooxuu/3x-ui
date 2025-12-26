@@ -94,6 +94,7 @@
 "inbounds" = "Inbounds"
 "settings" = "Panel Settings"
 "xray" = "Xray Configs"
+"user" = "User Manager"
 "logout" = "Log Out"
 "link" = "Manage"
 
@@ -247,6 +248,14 @@
 "periodicTrafficResetTitle" = "Traffic Reset"
 "periodicTrafficResetDesc" = "Automatically reset traffic counter at specified intervals"
 "lastReset" = "Last Reset"
+
+[pages.users]
+"userId" = "ID"
+"role" = "Role"
+"addUser" = "Add User"
+"editUser" = "Edit User"
+"deleteUser" = "Delete User"
+"deleteUserContent" = "Are you sure you want to delete user"
 
 [pages.client]
 "add" = "Add Client"
@@ -416,6 +425,10 @@
 "intervals" = "Intervals"
 "information" = "Information"
 "language" = "Language"
+"notice" = "Notice"
+"noticeTitle" = "Notice Settings"
+"noticeContent" = "Notice Content"
+"noticeContentDesc" = "Content to display in the header (supports HTML)"
 "telegramBotLanguage" = "Telegram Bot Language"
 
 [pages.xray]

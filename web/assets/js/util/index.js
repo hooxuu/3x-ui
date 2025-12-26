@@ -673,7 +673,7 @@ class ColorUtils {
     static clientUsageColor(clientStats, trafficDiff) {
         switch (true) {
             case !clientStats || clientStats.total == 0: return "#7a316f";
-            case clientStats.up + clientStats.down < clientStats.total - trafficDiff: return "#008771";
+            case clientStats.up + clientStats.down < clientStats.total - trafficDiff: return "#1990FF";
             case clientStats.up + clientStats.down < clientStats.total: return "#f37b24";
             default: return "#cf3c3c";
         }
@@ -684,9 +684,9 @@ class ColorUtils {
         let now = new Date().getTime(), expiry = client.expiryTime;
         switch (true) {
             case expiry === null: return "#7a316f";
-            case expiry < 0: return "#008771";
+            case expiry < 0: return "#1990FF";
             case expiry == 0: return "#7a316f";
-            case now < expiry - threshold: return "#008771";
+            case now < expiry - threshold: return "#1990FF";
             case now < expiry: return "#f37b24";
             default: return "#cf3c3c";
         }

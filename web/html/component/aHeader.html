@@ -1,0 +1,136 @@
+{{define "component/aHeader"}}
+<style>
+    .ant-layout-header {
+        background: #fff !important;
+        padding: 0 24px !important;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 1px 4px rgba(0,21,41,.08);
+        z-index: 100;
+        height: 64px;
+        position: sticky;
+        top: 0;
+        width: 100%;
+    }
+    .dark .ant-layout-header {
+        background: #141414 !important;
+        box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+    .header-notice {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-right: 20px;
+        color: inherit;
+        font-size: 14px;
+    }
+    .user-dropdown-link {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s;
+        padding: 0 12px;
+    }
+    .user-dropdown-link:hover {
+        background: rgba(0,0,0,0.025);
+    }
+    .dark .user-dropdown-link:hover {
+        background: rgba(255,255,255,0.05);
+    }
+    .user-avatar {
+        background-color: #1890ff;
+        vertical-align: middle;
+        margin-right: 8px;
+        color: #fff;
+    }
+</style>
+
+<script>
+    Vue.component('a-header', {
+        template: `
+        <a-layout-header :class="themeSwitcher.currentTheme">
+            <div class="header-notice" v-html="noticeContent"></div>
+            <a-dropdown placement="bottomRight">
+                <a-menu slot="overlay" @click="handleMenuClick" :class="themeSwitcher.currentTheme">
+                    <a-menu-item key="password">
+                        <a-icon type="lock" /> {{ i18n "password" }}
+                    </a-menu-item>
+                    <a-menu-divider />
+                    <a-menu-item key="logout">
+                        <a-icon type="logout" /> {{ i18n "menu.logout" }}
+                    </a-menu-item>
+                </a-menu>
+                <div class="user-dropdown-link">
+                    <a-avatar class="user-avatar" size="default">
+                        [[ username.charAt(0).toUpperCase() ]]
+                    </a-avatar>
+                    <span>[[ username ]]</span>
+                </div>
+            </a-dropdown>
+
+            <a-modal v-model="passwordModal.visible" title='{{ i18n "password" }}' @ok="updatePassword" :class="themeSwitcher.currentTheme">
+                <a-form-model :model="passwordForm" ref="passwordForm" :rules="passwordRules">
+                    <a-form-model-item label='{{ i18n "username" }}'>
+                        <a-input v-model="passwordForm.username" disabled />
+                    </a-form-model-item>
+                    <a-form-model-item label='{{ i18n "password" }}' prop="password">
+                        <a-input-password v-model="passwordForm.password" />
+                    </a-form-model-item>
+                </a-form-model>
+            </a-modal>
+        </a-layout-header>
+        `,
+        delimiters: ['[[', ']]'],
+        data() {
+            return {
+                themeSwitcher: themeSwitcher,
+                noticeContent: '',
+                username: '{{ .user.Username }}',
+                passwordModal: {
+                    visible: false
+                },
+                passwordForm: {
+                    username: '{{ .user.Username }}',
+                    password: ''
+                },
+                passwordRules: {
+                    password: [{ required: true, message: 'Required', trigger: 'blur' }]
+                }
+            }
+        },
+        async mounted() {
+            const msg = await HttpUtil.post("{{ .base_path }}panel/setting/all");
+            if (msg.success) {
+                this.noticeContent = msg.obj.noticeContent;
+            }
+        },
+        methods: {
+            handleMenuClick(e) {
+                if (e.key === 'logout') {
+                    location.href = '{{ .base_path }}logout/';
+                } else if (e.key === 'password') {
+                    this.passwordForm.password = '';
+                    this.passwordModal.visible = true;
+                }
+            },
+            updatePassword() {
+                this.$refs.passwordForm.validate(async valid => {
+                    if (valid) {
+                        const success = await HttpUtil.post('{{ .base_path }}panel/api/users/update/{{ .user.Id }}', {
+                            username: this.passwordForm.username,
+                            password: this.passwordForm.password
+                        });
+                        if (success.success) {
+                            this.$message.success('{{ i18n "success" }}');
+                            this.passwordModal.visible = false;
+                            setTimeout(() => location.href = '{{ .base_path }}logout/', 1000);
+                        }
+                    }
+                });
+            }
+        }
+    });
+</script>
+{{end}}
